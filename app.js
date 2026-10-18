@@ -15,108 +15,108 @@ function validPlace(p){
     && Array.isArray(p.vibes)&&p.vibes.length>0&&p.vibes.every(v=>Object.hasOwn(VIBES,v))
     && Array.isArray(p.times)&&p.times.length>0&&p.times.every(t=>Object.hasOwn(TIMES,t));
 }
-function recommend(data,time,vibe){
+function officialURL(url){return typeof url==='string' && /^https:\/\/(www\.)?(parks\.ca\.gov|pismobeach\.org|morrobayca\.gov|morrobay\.org|experiencepismobeach\.com|visitavilabeach\.com|portsanluis\.com)\//.test(url);}
+function rankPlaces(data,time,vibe){return data.filter(p=>p.vibes.includes(vibe)).sort((a,b)=>Number(b.times.includes(time))-Number(a.times.includes(time)));}
+function recommend(data,time,vibe,placeId){
   if(!Object.hasOwn(TIMES,time)||!Object.hasOwn(VIBES,vibe)) return {error:'Choose a listed time and vibe, then try again.'};
   if(!Array.isArray(data)||data.length===0||!data.every(validPlace)||new Set(data.map(p=>p.id)).size!==data.length) return {error:'The local place list is unavailable. Reload the page, or read the sources below.'};
-  const candidates=data.filter(p=>p.vibes.includes(vibe));
+  const candidates=rankPlaces(data,time,vibe);
   if(!candidates.length) return {error:'No supported pick for this vibe in our small collection. Try another vibe.'};
   // A supported vibe is required. Time preference breaks ties; stable file order resolves equal scores.
-  const place=candidates.reduce((best,p)=>Number(p.times.includes(time))>Number(best.times.includes(time))?p:best);
+  const place=placeId?candidates.find(p=>p.id===placeId):candidates[0];
+  if(!place)return {error:'This place does not fit the selected vibe. Choose another place.'};
   const partial=!place.times.includes(time);
   const surf=vibe==='surf'?'Surf interest only: this is a place to consider, not a recommendation to enter the water. No swell, skill suitability or safety is assessed. ':'';
   return {place,time,vibe,partial,reason:`${place.detail} ${TIME_NOTES[time]}${partial?' Your vibe fits; we do not have a distinct time match in this small collection.':''}`,note:surf+place.note};
 }
-if(typeof module!=='undefined'&&module.exports) module.exports={TIMES,VIBES,recommend,validPlace};
+if(typeof module!=='undefined'&&module.exports) module.exports={TIMES,VIBES,recommend,validPlace,rankPlaces,officialURL};
 if(typeof document!=='undefined'){
   const form=document.getElementById('coast-form');
   const result=document.getElementById('result'),status=document.getElementById('status');
-  const resultStage=result.parentElement;
   const spotName=document.getElementById('spot-name');
-  const moodLabel=document.getElementById('mood-label');
-  const scenePhase=document.getElementById('scene-phase');
-  const changePick=document.getElementById('change-pick');
-  let waveTimer,revealTimer,resetMidpoint,resetEnd;
+  const shareStatus=document.getElementById('share-status');
+  const selected=name=>form.querySelector(`input[name="${name}"]:checked`);
+  const value=name=>selected(name)?.value;
   const reducedMotion=()=>typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const selected=(name)=>form.querySelector(`input[name="${name}"]:checked`);
-  const value=(name)=>selected(name)?.value;
-  function clearReset(){
-    clearTimeout(resetMidpoint);clearTimeout(resetEnd);
-    resetMidpoint=resetEnd=undefined;
-    document.body.classList.remove('is-resetting');
-    resultStage.style.minHeight='';
+  let activePick=null,revealTimer;
+  const places=()=>Array.isArray(globalThis.COAST_DATA)?globalThis.COAST_DATA:[];
+  const safePlaces=()=>places().filter(validPlace);
+  function updateMood(){
+    document.body.dataset.time=value('time');
+    document.getElementById('mood-label').textContent=TIMES[value('time')]||'Coastal light';
   }
-  function updateMood(time){
-    document.body.dataset.time=time;
-    const label=TIMES[time]||'Coastal light';
-    moodLabel.textContent=label;
-    if(scenePhase) scenePhase.textContent=label;
+  function clearPlanURL(){
+    const url=new URL(location.href); ['time','vibe','place'].forEach(key=>url.searchParams.delete(key));if(url.hash==='#result')url.hash='';
+    try{history.replaceState(null,'',url);}catch{}
   }
-  function pulseWave(){
-    clearTimeout(waveTimer);
-    document.body.classList.remove('wave-response');
-    if(reducedMotion()) return;
-    void document.body.offsetWidth;
-    document.body.classList.add('wave-response');
-    waveTimer=setTimeout(()=>document.body.classList.remove('wave-response'),900);
+  function hideResult(){
+    clearTimeout(revealTimer);result.hidden=true;activePick=null;shareStatus.textContent='';clearPlanURL();
   }
-  function hideStaleResult(){
-    clearTimeout(revealTimer);
-    result.hidden=true;
-    result.classList.remove('revealing');
+  function setChoice(name,choice){
+    const input=form.querySelector(`input[name="${name}"][value="${choice}"]`);
+    if(input)input.checked=true;
   }
-  function synchronize(){
-    clearReset();
-    hideStaleResult();
-    updateMood(value('time'));
-    status.textContent='Choices updated. Find your spot to see this pick.';
-    pulseWave();
+  function planURL(pick){
+    const url=new URL(location.href);url.searchParams.set('time',pick.time);url.searchParams.set('vibe',pick.vibe);url.searchParams.set('place',pick.place.id);url.hash='result';return url;
   }
-  form.querySelectorAll('input[type="radio"][name="time"], input[type="radio"][name="vibe"]').forEach(input=>input.addEventListener('change',synchronize));
-  updateMood(value('time'));
-  form.addEventListener('submit',event=>{
-    event.preventDefault();
-    clearReset();
-    clearTimeout(revealTimer);
-    result.classList.remove('revealing');
-    const pick=recommend(globalThis.COAST_DATA,value('time'),value('vibe'));
-    if(pick.error){result.hidden=true;status.textContent=pick.error;return;}
-    document.getElementById('selection-label').textContent=`Your pick / ${TIMES[pick.time]} + ${VIBES[pick.vibe]}`;
-    spotName.textContent=pick.place.name;
-    document.getElementById('spot-reason').textContent=pick.reason;
-    document.getElementById('spot-fact').textContent=`Place fact: ${pick.place.fact}`;
-    document.getElementById('spot-note').textContent=pick.note;
-    document.getElementById('spot-source').href=pick.place.source;
-    result.hidden=false;
-    if(!reducedMotion()){
-      void result.offsetWidth;
-      result.classList.add('revealing');
-      revealTimer=setTimeout(()=>result.classList.remove('revealing'),650);
-    }
-    status.textContent=`${pick.place.name}. ${pick.partial?'Vibe match; no distinct time match.':'A curated preference match.'}`;
-    spotName.setAttribute('tabindex','-1');
-    spotName.focus({preventScroll:true});
-    const bounds=result.getBoundingClientRect();
-    if(bounds.top<0||bounds.bottom>innerHeight) result.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'nearest'});
-  });
-  changePick.addEventListener('click',()=>{
-    clearReset();
-    clearTimeout(waveTimer);document.body.classList.remove('wave-response');
+  function renderPick(pick,focus=true){
     clearTimeout(revealTimer);result.classList.remove('revealing');
-    const finish=()=>{
-      document.body.classList.remove('is-resetting');
-      resultStage.style.minHeight='';
-      selected('time')?.focus();
-    };
-    const midpoint=()=>{
-      result.hidden=true;
-      status.textContent='Choose a time and vibe, then find your next spot.';
-    };
-    if(reducedMotion()){
-      midpoint();finish();return;
+    if(pick.error){hideResult();status.textContent=pick.error;return;}
+    activePick=pick;shareStatus.textContent='';
+    const p=pick.place;
+    document.getElementById('selection-label').textContent=`${TIMES[pick.time]} / ${VIBES[pick.vibe]} / ${pick.partial?'Vibe match':'Time + vibe match'}`;
+    spotName.textContent=p.name;
+    document.getElementById('spot-number').textContent=String(places().findIndex(item=>item.id===p.id)+1).padStart(2,'0');
+    document.getElementById('spot-area').textContent=p.area||'SLO County';
+    document.getElementById('spot-kind').textContent=p.kind||'Coastal place';
+    document.getElementById('spot-icon').setAttribute('href',`#icon-${['surf','relax','walk','scenery'].includes(p.icon)?p.icon:'scenery'}`);
+    document.getElementById('spot-reason').textContent=pick.reason;
+    document.getElementById('spot-fact').textContent=p.fact;
+    document.getElementById('spot-note').textContent=pick.note;
+    document.getElementById('spot-access').textContent=p.access||'Check the official place guide for access details before leaving.';
+    document.getElementById('spot-prompt').textContent=p.prompt||'Take your time and follow posted guidance.';
+    document.getElementById('spot-source').href=p.source;
+    document.getElementById('access-source').href=officialURL(p.accessSource)?p.accessSource:p.source;
+    document.getElementById('spot-map').href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.mapQuery||p.name+', San Luis Obispo County, CA')}`;
+    const alternatives=document.getElementById('alternatives');alternatives.replaceChildren();
+    const others=rankPlaces(places(),pick.time,pick.vibe).filter(item=>item.id!==p.id);
+    if(others.length){
+      const heading=document.createElement('p');heading.textContent='Another way to '+(pick.vibe==='coastal-walk'?'take a walk':pick.vibe==='scenery'?'take in the view':pick.vibe==='surf'?'watch the surf':'unwind');alternatives.append(heading);
+      others.forEach(other=>{const button=document.createElement('button');button.type='button';button.className='alternative-button';button.textContent=other.name+' ↗';button.addEventListener('click',()=>renderPick(recommend(places(),value('time'),value('vibe'),other.id)));alternatives.append(button);});
     }
-    resultStage.style.minHeight=`${Math.ceil(resultStage.getBoundingClientRect().height)}px`;
-    document.body.classList.add('is-resetting');
-    resetMidpoint=setTimeout(midpoint,450);
-    resetEnd=setTimeout(finish,900);
+    result.hidden=false;
+    if(!reducedMotion()){void result.offsetWidth;result.classList.add('revealing');revealTimer=setTimeout(()=>result.classList.remove('revealing'),400);}
+    try{history.replaceState(null,'',planURL(pick));}catch{}
+    status.textContent=`${p.name}. ${pick.partial?'Vibe match; no distinct time match.':'An editorial time and vibe match.'}`;
+    if(focus){spotName.focus({preventScroll:true});result.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}
+  }
+  form.querySelectorAll('input[type="radio"]').forEach(input=>input.addEventListener('change',()=>{hideResult();updateMood();status.textContent='Your moment is set. Find your spot to see the match.';}));
+  form.addEventListener('submit',event=>{event.preventDefault();renderPick(recommend(places(),value('time'),value('vibe')));});
+  document.getElementById('change-pick').addEventListener('click',()=>{hideResult();status.textContent='Choose your next moment.';selected('time')?.focus({preventScroll:true});document.getElementById('picker').scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
+  document.getElementById('share-pick').addEventListener('click',async()=>{
+    if(!activePick)return;
+    const url=planURL(activePick).href;
+    try{await navigator.clipboard.writeText(url);shareStatus.textContent='Plan link copied. Send it to your coast-going crew.';}
+    catch{shareStatus.textContent='Copy the link from your address bar to share this plan.';}
   });
+  const collection=document.getElementById('place-collection');
+  safePlaces().forEach((p,index)=>{
+    const button=document.createElement('button');button.type='button';button.className='place-card';
+    const top=document.createElement('span');top.className='card-top';top.textContent=String(index+1).padStart(2,'0')+' / '+(p.area||'SLO County');
+    const name=document.createElement('strong');name.textContent=p.name;
+    const kind=document.createElement('span');kind.className='card-kind';kind.textContent=p.kind||'Coastal place';
+    const cta=document.createElement('span');cta.className='card-cta';cta.textContent='Explore this place ↗';
+    button.append(top,name,kind,cta);button.addEventListener('click',()=>{
+      const vibe=p.vibes.includes(value('vibe'))?value('vibe'):p.vibes[0];
+      setChoice('vibe',vibe);setChoice('time',p.times.includes(value('time'))?value('time'):p.times[0]);updateMood();renderPick(recommend(places(),value('time'),value('vibe'),p.id));
+    });collection.append(button);
+  });
+  if(!safePlaces().length){collection.textContent='The local collection is unavailable. Read the linked sources below, or reload to try again.';}
+  updateMood();
+  const params=new URLSearchParams(location.search);
+  if(params.has('time')||params.has('vibe')||params.has('place')){
+    const pick=recommend(places(),params.get('time'),params.get('vibe'),params.get('place'));
+    if(!pick.error){setChoice('time',pick.time);setChoice('vibe',pick.vibe);updateMood();renderPick(pick,false);}
+    else{status.textContent='That plan link is incomplete or unavailable. Choose a new time and vibe.';clearPlanURL();}
+  }
 }

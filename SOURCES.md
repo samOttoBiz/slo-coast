@@ -1,21 +1,29 @@
 # The places behind the picks
 
-Checked September 11, 2026. These are stable place facts, not current conditions.
+Place and access facts reviewed October 18, 2026 against the official sources below. This is a static editorial guide, not a live conditions service. Facilities, access, fees and restrictions can change; the linked authorities take precedence.
 
-| Place | Fact used | Primary source |
+| Place | Facts used | Official sources |
 | --- | --- | --- |
-| Pismo beachfront | Beaches immediately north and south of the pier; surfing is an established interest here. | [Official Pismo visitor guide](https://experiencepismobeach.com/beach-and-outdoors/beaches/) |
-| Avila beachfront | Beachfront in the coastal town of Avila Beach. | [Avila Beach Tourism Alliance](https://visitavilabeach.com/play-all-day-in-avila-beach/) |
-| Dinosaur Caves Park | Oceanfront bluff-top park in Shell Beach, used for walking and photography. | [City of Pismo Beach](https://www.pismobeach.org/288/Dinosaur-Caves-Park) |
-| Morro Rock Beach | Beach north of Morro Rock; established surf interest. | [City of Morro Bay](https://www.morrobayca.gov/383/Morro-Rock-Beach), [official visitor bureau](https://www.morrobay.org/directory/morro-rock-beach/) |
-| Spooner’s Cove | Beach in Montaña de Oro, across from the campground. | [California State Parks](https://www.parks.ca.gov/?page_id=592) |
+| Pismo beachfront | Beaches immediately north and south of the pier. Downtown has paid parking areas; check posted signs and current rates. | [Pismo tourism beach guide](https://experiencepismobeach.com/beach/), [parking guide](https://experiencepismobeach.com/plan/parking-in-pismo-beach/) |
+| Avila beachfront | Public beachfront at Avila Beach; public restrooms are provided. | [Avila Beach Tourism Alliance](https://visitavilabeach.com/play-all-day-in-avila-beach/), [Port San Luis Harbor District](https://www.portsanluis.com/2150/The-Tidelands) |
+| Dinosaur Caves Park | Oceanfront bluff-top park in Shell Beach, at Cliff Street and Shell Beach Road. Restroom and off-street parking. It is a viewpoint, not a route down the cliffs. | [City of Pismo Beach](https://www.pismobeach.org/288/Dinosaur-Caves-Park) |
+| Morro Rock Beach | Beach north of Morro Rock. Parking, public restrooms and showers listed on site. Surf interest is not an endorsement to enter the water. | [City beach page](https://www.morrobayca.gov/383/Morro-Rock-Beach), [official visitor bureau amenities](https://www.morrobay.org/directory/morro-rock-beach/), [city safety guidance](https://www.morrobayca.gov/187/Beach-Information) |
+| Spooner’s Cove | Cove in Montaña de Oro State Park, across from the campground. Beach-level parking, a firm-surface route onto the beach, and nearby picnic sites and restrooms. These are reported facilities, not a guarantee that every visitor's access needs can be met. | [California State Parks](https://www.parks.ca.gov/?page_id=592), [State Parks access details](https://www.parks.ca.gov/AccessibleFeatures/Details/592) |
 
-The descriptions, vibe tags and time preferences in `data.js` are editorial choices. They are not scientific rankings or statements about present-day access, crowds, weather, tide or safety. A matching vibe is required. Among those places, a matching time preference wins; file order settles ties. If no time preference matches, the result says so. Some choices intentionally repeat a place. Time also changes the explanation and illustrated sky. Sunrise means early coastal light, not a claim that the sun rises over the Pacific.
+## How matching works
 
-Surf indicates interest only. Consult current official beach notices and [National Weather Service coastal advisories](https://www.weather.gov/beach/) before going. Static content cannot assess whether entering the water is appropriate. Access, parking, lifeguards and conditions are not guaranteed.
+The descriptions, outing ideas, vibe tags and time preferences are editorial choices. They are not scientific rankings or statements about present-day crowds, weather, tide or safety. A supported vibe is required. Among those places, a matching time preference wins; file order settles ties. If no time preference matches, the result explicitly labels itself a **vibe match**. Some choices intentionally repeat a place.
 
-## Illustration and design
+Alternative buttons show other places that support the current vibe, with time matches listed first. Choosing an alternative preserves the time and vibe. Browsing the collection keeps compatible preferences and changes incompatible preferences to the place's first supported option. The controls and match label reflect those changes. Share links encode only the selected time, vibe and place; they do not encode the checklist or any personal data.
 
-The detailed coastal hero was created with the built-in Imagegen tool and optimized as a local WebP asset. It depicts an imaginary coastline, not a real view of any recommended place or a measured sun path. It must never be used as documentary evidence. See the [asset provenance](CREDITS.md). No third-party photograph, external font, reference-image text or business claim is shipped. The result vignette is illustrative too.
+Sunrise means early coastal light, not a promise of sunrise over the Pacific. The lighting is artistic and is not based on the clock, forecasts or astronomical calculations.
 
-The page uses one immersive scene, two native radio preference groups and one result. Time changes the illustrated sky, sun, ocean tone and lighting; finite selection and reset wave responses settle in about a second. The result image reuses the same imaginary coastline and is not a photograph of the recommended destination. Reduced-motion preferences disable animation. The optimized illustration is served locally with the page. No external package, runtime API, geolocation or model call is required.
+## Before heading out
+
+Consult posted notices, the place's official guide and [National Weather Service coastal advisories](https://www.weather.gov/beach/). Surf indicates interest only; this guide does not assess swell, skill suitability or water safety. Morro Bay warns about rip currents and waves reaching previously dry areas. Lifeguard presence must not be assumed; its city program is seasonal. No conditions have been verified as safe for swimming or surfing.
+
+The packing and outing prompts are suggestions, not verified itineraries or travel-time estimates. Map links open Google Maps searches for named public destinations; the site does not request geolocation or supply turn-by-turn routes.
+
+## Artwork
+
+The hero uses a locally served generated WebP illustration of an imaginary coastline. It is visibly labelled and is not a photograph, a map, a real view of any recommended place, or a measured sun path. Results use typographic field cards and icons, not destination photos. See [CREDITS.md](CREDITS.md) for provenance. No new third-party photographs or fonts are shipped.
