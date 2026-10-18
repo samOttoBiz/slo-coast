@@ -16,6 +16,12 @@ A small coastal field guide by Sam Otto. Pick a time and a vibe, or browse five 
 - Links to official coastal advisories; reset washes the result away with a wave, unless reduced motion is enabled.
 - Uses responsive layouts, native radio controls, keyboard focus, a skip link and reduced-motion support.
 
+## Favorites
+
+The Favorites tab stores visited places, their order, notes and optional photos in IndexedDB on this browser and origin. Add a guide destination or a custom place; use Move up / Move down to rank it. Edit changes only take effect when saved. Removing a place requires an inline confirmation and also removes its local photo.
+
+No personal entries or photos are uploaded, committed to GitHub, included in plan URLs or synchronized across devices. Clearing site/browser data removes them; private browsing and browser storage eviction can also remove data. The current limits are 100 entries, 100 characters per name, 3,000 per note, and 30 MB of processed photos. JPG, PNG and WebP inputs up to 10 MB / 25 megapixels are decoded locally, resized to at most 1,600 pixels and re-encoded as JPEG (up to 2 MB each), without original metadata. One photo per favorite. Local storage failures are shown explicitly; drafts remain open on failed saves. Concurrent writes use an IndexedDB transaction and conflicting edits require reopening the entry.
+
 ## Run and test locally
 
 No packages, build step, API keys or external fonts are required. Open `index.html`, or serve the directory:
@@ -28,6 +34,7 @@ Visit <http://localhost:8000>. Stop with Ctrl+C. Run the deterministic matcher a
 
 ```sh
 node test.js
+node favorites.test.js
 ```
 
 The checks cover all 20 time/vibe combinations, all 55 supported explicit place plans, malformed and missing data, unsupported inputs and source URL validation. Browser QA also covers the collection, alternative selection, reset, sharing, narrow layouts and external link targets.
@@ -37,6 +44,8 @@ The checks cover all 20 time/vibe combinations, all 55 supported explicit place 
 - `index.html`: structure, controls, recommendation and coastal advisory link.
 - `style.css`: responsive layout, lighting and restrained transitions.
 - `app.js`: deterministic matching, browsing, URL restoration, alternatives and plan URLs.
+- `favorites-store.js`: local database, photo processing, input limits and atomic updates.
+- `favorites.js`: Favorites tabs, editor, rankings and local-only photo previews.
 - `data.js`: places, editorial preferences and sourced access details.
 - `assets/coast-illustration.webp`: local generated opening illustration.
 - `assets/photos/`: five real, licensed destination photographs.

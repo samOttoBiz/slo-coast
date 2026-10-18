@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#103d44"><meta name="description" content="Pick a time and a vibe. Find one curated SLO County coastal spot."><title>SLO COAST · Find your SLO beach.</title><link rel="stylesheet" href="style.css?v=20261018-copy"><script defer src="data.js?v=20261018-copy"></script><script defer src="app.js?v=20261018-copy"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#103d44"><meta name="description" content="Pick a time and a vibe. Find one curated SLO County coastal spot."><title>SLO COAST · Find your SLO beach.</title><link rel="stylesheet" href="style.css?v=20261018-favorites"><script defer src="data.js?v=20261018-favorites"></script><script defer src="app.js?v=20261018-favorites"></script><script defer src="favorites-store.js?v=20261018-favorites"></script><script defer src="favorites.js?v=20261018-favorites"></script></head>
 <body data-time="golden-hour">
 <a class="skip-link" href="#picker">Skip to the spot finder</a>
 <svg class="symbol-library" aria-hidden="true"><defs>
@@ -11,6 +11,8 @@
 </defs></svg>
 <header class="masthead"><a class="brand" href="./" aria-label="SLO Coast home"><svg aria-hidden="true"><use href="#icon-surf"/></svg>SLO COAST</a><span class="masthead-note">A small guide to the Central Coast</span><a class="header-action" href="#picker">Find my spot <span aria-hidden="true">↓</span></a></header>
 <main>
+<nav class="view-tabs" role="tablist" aria-label="Coast views"><button id="explore-tab" type="button" role="tab" aria-selected="true" aria-controls="explore-panel">Explore</button><button id="favorites-tab" type="button" role="tab" aria-selected="false" aria-controls="favorites-panel" tabindex="-1">Favorites <span id="favorites-count">0</span></button></nav>
+<div id="explore-panel" role="tabpanel" aria-labelledby="explore-tab">
 <section class="experience" aria-labelledby="headline">
 <div class="scene" role="img" aria-label="Illustrated coastline with changing light.">
 <div class="ocean" aria-hidden="true"></div><img class="coast-image" src="assets/coast-illustration.webp" alt="" width="1536" height="1024" fetchpriority="high" decoding="async" onerror="this.hidden=true">
@@ -45,13 +47,28 @@
 <aside class="field-card"><div class="field-header"><p class="eyebrow">Coastal field notes</p><span id="spot-number" class="spot-number"></span></div><figure class="destination-photo"><img id="spot-photo" alt="" decoding="async"><p id="photo-fallback" hidden>Destination photo unavailable.</p><figcaption id="photo-credit"></figcaption></figure><div class="field-location"><p id="spot-area" class="field-area"></p><p id="spot-kind" class="field-kind"></p></div></aside>
 <div class="pick-copy"><p id="selection-label" class="eyebrow"></p><h2 id="spot-name" tabindex="-1"></h2><p id="spot-reason"></p><p id="spot-fact" class="fact"></p>
 <div class="practical-grid"><div><h3>Arrive with a plan</h3><p id="spot-access"></p><a id="access-source" href="#" target="_blank" rel="noopener noreferrer">Access details ↗</a></div><div><h3>While you’re there</h3><p id="spot-prompt"></p><a id="outing-source" hidden target="_blank" rel="noopener noreferrer">Local details ↗</a></div></div>
-<p id="spot-note" class="note"></p><div class="result-links"><a id="spot-map" class="primary-link" href="#" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a><a id="spot-source" href="#" target="_blank" rel="noopener noreferrer">Official place guide ↗</a><a id="surf-source" hidden target="_blank" rel="noopener noreferrer">Check surf on Surfline ↗</a></div><p id="share-status" role="status" class="share-status"></p>
+<p id="spot-note" class="note"></p><div class="result-links"><a id="spot-map" class="primary-link" href="#" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a><a id="spot-source" href="#" target="_blank" rel="noopener noreferrer">Official place guide ↗</a><button type="button" id="save-place-favorite" class="favorite-action">Add to favorites ♡</button><a id="surf-source" hidden target="_blank" rel="noopener noreferrer">Check surf on Surfline ↗</a></div><p id="share-status" role="status" class="share-status"></p>
 <div id="alternatives" class="alternatives" aria-label="Other places for your vibe"></div>
 <button type="button" id="change-pick" class="reset-button">Change my moment <span aria-hidden="true">↑</span></button></div>
 </article><div id="wave-wipe" aria-hidden="true"><svg viewBox="0 0 1200 800" preserveAspectRatio="none"><path class="wave-back" d="M0 90 Q300 -40 600 85 T1200 65 V800 H0Z"/><path d="M0 150 Q300 10 600 130 T1200 115 V800 H0Z"/></svg></div></div>
 <section id="collection" class="collection" aria-labelledby="collection-heading"><div class="section-heading"><div><p class="eyebrow">The short list / 01—05</p><h2 id="collection-heading">Explore the coast.</h2></div><p>Choose a place to see its photos, access details and map.</p></div><div id="place-collection" class="place-collection"></div></section>
 
 <noscript><p class="no-script">Turn on JavaScript for matching. You can still read <a href="SOURCES.md">the places and their official sources</a>.</p></noscript>
+</div>
+<section id="favorites-panel" class="favorites-panel" role="tabpanel" aria-labelledby="favorites-tab" hidden>
+<div class="favorites-heading-row"><div><p class="eyebrow">Your visited places</p><h1 id="favorites-heading" tabindex="-1">Your favorite places.</h1></div><button id="add-favorite" class="primary-link" type="button" disabled>+ Add a place</button></div>
+<p class="favorites-storage">Saved only in this browser, including photos. No account or device sync; clearing browser data removes your list.</p>
+<p id="favorites-status" class="favorites-status" role="status" aria-live="polite"></p><button type="button" id="storage-retry" class="favorite-action" hidden>Try local storage again</button>
+<section id="favorite-editor" class="favorite-editor" aria-labelledby="favorite-form-heading" hidden><h2 id="favorite-form-heading">Add a visited place</h2>
+<form id="favorite-form">
+<div class="favorite-form-grid"><div><label for="favorite-place">Place you've visited</label><select id="favorite-place"><option value="custom">Another place…</option></select></div><div id="custom-place-field"><label for="favorite-name">Place name</label><input id="favorite-name" maxlength="100" required autocomplete="off" placeholder="Enter a place name"></div></div>
+<div><label for="favorite-notes">What did you like? <span class="optional">Optional</span></label><textarea id="favorite-notes" rows="4" maxlength="3000" placeholder="Your favorite view, a good walk, something to remember…"></textarea></div>
+<div><label for="favorite-photo">Your photo <span class="optional">Optional</span></label><p id="favorite-photo-help" class="photo-help">JPG, PNG or WebP up to 10 MB. Resized on this device; never uploaded.</p><input id="favorite-photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="favorite-photo-help"><img id="favorite-photo-preview" class="favorite-photo-preview" alt="Photo selected for this favorite" hidden><button id="remove-draft-photo" type="button" class="favorite-action" hidden>Remove photo</button></div>
+<p id="favorite-form-status" role="status" aria-live="polite"></p><div class="favorite-form-actions"><button id="save-favorite" type="submit" class="primary-link">Save favorite</button><button id="cancel-favorite" type="button" class="favorite-action">Cancel</button></div>
+</form></section>
+<div id="favorites-empty" class="favorites-empty"><h2>No favorites yet.</h2><p>Add a place you've visited, then move your favorites to the top.</p></div>
+<ol id="favorite-list" class="favorite-list" aria-label="Favorite places ranked from first to last"></ol>
+</section>
 </main>
 <footer><p><a href="https://www.weather.gov/beach/" target="_blank" rel="noopener noreferrer">Beach advisories ↗</a> · <a href="SOURCES.md">Sources & methodology</a> · <a href="CREDITS.md">Photo & artwork credits</a></p><span>By Sam Otto.</span></footer>
 </body></html>
