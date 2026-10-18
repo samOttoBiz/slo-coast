@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#103d44"><meta name="description" content="Pick a time and a vibe. Find one curated SLO County coastal spot."><title>SLO COAST · Find your SLO beach.</title><link rel="stylesheet" href="style.css?v=20261018-photos"><script defer src="data.js?v=20261018-photos"></script><script defer src="app.js?v=20261018-photos"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#103d44"><meta name="description" content="Pick a time and a vibe. Find one curated SLO County coastal spot."><title>SLO COAST · Find your SLO beach.</title><link rel="stylesheet" href="style.css?v=20261018-readable"><script defer src="data.js?v=20261018-readable"></script><script defer src="app.js?v=20261018-readable"></script></head>
 <body data-time="golden-hour">
 <a class="skip-link" href="#picker">Skip to the spot finder</a>
 <svg class="symbol-library" aria-hidden="true"><defs>
@@ -17,20 +17,20 @@
 <div class="sky-tone"></div><div class="water-tone"></div><div class="night-tone"></div><div class="sun"></div><div class="reading-shade"></div>
 <svg class="shore-response" viewBox="0 0 1500 180" preserveAspectRatio="none" aria-hidden="true"><path d="M-100 120Q200 25 510 105T1600 50M-100 148Q200 53 510 133T1600 78"/></svg>
 </div>
-<div class="hero-copy"><p class="eyebrow">San Luis Obispo County, California</p><h1 id="headline"><span>Find your</span><span>SLO <em>beach.</em></span></h1><p class="intro">The wide-open view. The slow afternoon. Find a corner of the coast that feels like your kind of day.</p><a class="hero-link" href="#collection">Meet the five places <span aria-hidden="true">↗</span></a></div>
+<div class="hero-copy"><p class="eyebrow">San Luis Obispo County, California</p><h1 id="headline"><span>Find your</span><span>SLO <em>beach.</em></span></h1><p class="intro">Five coastal places. Choose your time, find your view, and plan your visit.</p><a class="hero-link" href="#collection">Meet the five places <span aria-hidden="true">↗</span></a></div>
 <p class="art-caption">An imagined coastline · illustrated, not a destination photo</p><div class="light-label"><span class="eyebrow">Your light, your pace</span><span id="mood-label">Golden hour</span><span class="light-track" aria-hidden="true"><i></i></span></div>
 </section>
 <section class="finder" id="picker" aria-label="Choose your time and coastal vibe">
-<div class="finder-top"><span>Your coast, your call.</span><span class="step-hint">01 / Set the light &nbsp; 02 / Set the pace &nbsp; 03 / Head out prepared</span></div>
+<div class="finder-top"><span>Pick your time and vibe.</span><span class="step-hint">01 / Set the light &nbsp; 02 / Set the pace &nbsp; 03 / Head out prepared</span></div>
 <form id="coast-form">
-<fieldset id="time-group"><legend><span>01</span> When's your moment?</legend><div class="time-options">
+<fieldset id="time-group"><legend><span>01</span> Time of day</legend><div class="time-options">
 <label class="choice"><input id="time-sunrise" type="radio" name="time" value="sunrise"><span><i class="time-icon dawn" aria-hidden="true"></i>Sunrise</span></label>
 <label class="choice"><input id="time-morning" type="radio" name="time" value="morning"><span><i class="time-icon morning" aria-hidden="true"></i>Morning</span></label>
 <label class="choice"><input id="time-midday" type="radio" name="time" value="midday"><span><i class="time-icon noon" aria-hidden="true"></i>Midday</span></label>
 <label class="choice"><input id="time-golden-hour" type="radio" name="time" value="golden-hour" checked><span><i class="time-icon golden" aria-hidden="true"></i>Golden hour</span></label>
 <label class="choice"><input id="time-sunset" type="radio" name="time" value="sunset"><span><i class="time-icon dusk" aria-hidden="true"></i>Sunset</span></label>
 </div></fieldset>
-<fieldset id="vibe-group"><legend><span>02</span> What draws you out?</legend><div class="vibe-options">
+<fieldset id="vibe-group"><legend><span>02</span> Your vibe</legend><div class="vibe-options">
 <label class="vibe-choice"><input id="vibe-surf" type="radio" name="vibe" value="surf"><span><svg aria-hidden="true"><use href="#icon-surf"/></svg>Surf</span></label>
 <label class="vibe-choice"><input id="vibe-relax" type="radio" name="vibe" value="relax"><span><svg aria-hidden="true"><use href="#icon-relax"/></svg>Relax</span></label>
 <label class="vibe-choice"><input id="vibe-coastal-walk" type="radio" name="vibe" value="coastal-walk"><span><svg aria-hidden="true"><use href="#icon-walk"/></svg>Coastal walk</span></label>
@@ -44,14 +44,14 @@
 <article id="result" class="result" hidden aria-labelledby="spot-name">
 <aside class="field-card"><div class="field-header"><p class="eyebrow">Coastal field notes</p><span id="spot-number" class="spot-number"></span></div><figure class="destination-photo"><img id="spot-photo" alt="" decoding="async"><p id="photo-fallback" hidden>Destination photo unavailable.</p><figcaption id="photo-credit"></figcaption></figure><div class="field-location"><p id="spot-area" class="field-area"></p><p id="spot-kind" class="field-kind"></p></div><p class="photo-context">A real view of this place, photographed in <span id="photo-year"></span>. Photos show a moment in time, not today’s conditions.</p></aside>
 <div class="pick-copy"><p id="selection-label" class="eyebrow"></p><h2 id="spot-name" tabindex="-1"></h2><p id="spot-reason"></p><p id="spot-fact" class="fact"></p>
-<div class="practical-grid"><div><h3>Arrive with a plan</h3><p id="spot-access"></p><a id="access-source" href="#" target="_blank" rel="noopener noreferrer">Access details ↗</a></div><div><h3>Make a moment of it</h3><p id="spot-prompt"></p><span class="editorial-label">An idea from our guide</span></div></div>
-<p id="spot-note" class="note"></p><div class="result-links"><a id="spot-map" class="primary-link" href="#" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a><a id="spot-source" href="#" target="_blank" rel="noopener noreferrer">Official place guide ↗</a><button type="button" id="share-pick" class="text-button">Copy this plan ↗</button></div><p id="share-status" role="status" class="share-status"></p>
+<div class="practical-grid"><div><h3>Arrive with a plan</h3><p id="spot-access"></p><a id="access-source" href="#" target="_blank" rel="noopener noreferrer">Access details ↗</a></div><div><h3>While you’re there</h3><p id="spot-prompt"></p><a id="outing-source" hidden target="_blank" rel="noopener noreferrer">Local details ↗</a></div></div>
+<p id="spot-note" class="note"></p><div class="result-links"><a id="spot-map" class="primary-link" href="#" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a><a id="spot-source" href="#" target="_blank" rel="noopener noreferrer">Official place guide ↗</a><a id="surf-source" hidden target="_blank" rel="noopener noreferrer">Check surf on Surfline ↗</a></div><p id="share-status" role="status" class="share-status"></p>
 <div id="alternatives" class="alternatives" aria-label="Other places for your vibe"></div>
 <button type="button" id="change-pick" class="reset-button">Change my moment <span aria-hidden="true">↑</span></button></div>
-</article></div>
-<section id="collection" class="collection" aria-labelledby="collection-heading"><div class="section-heading"><div><p class="eyebrow">The short list / 01—05</p><h2 id="collection-heading">Five places.<br><em>A different kind of day.</em></h2></div><p>Beachfronts, a bluff-top park, a rugged cove. Get to know the places behind the picks, then make one your own.</p></div><div id="place-collection" class="place-collection"></div><p class="collection-note">A small, hand-curated collection. Time and vibe matches reflect our preferences, not current conditions.</p></section>
-<section class="before-you-go" aria-labelledby="before-heading"><div><p class="eyebrow">A good day starts before you leave</p><h2 id="before-heading">A little preparation.<br>A lot more coast.</h2></div><div class="checklist"><label><input type="checkbox"> <span>Check access & posted notices<small>Follow the official guide for your chosen place.</small></span></label><label><input type="checkbox"> <span>Check coastal advisories<small><a href="https://www.weather.gov/beach/" target="_blank" rel="noopener noreferrer">National Weather Service beach hazards ↗</a></small></span></label><label><input type="checkbox"> <span>Pack a layer, water & sun protection<small>Leave room in your plan for changing conditions.</small></span></label></div></section>
+</article><div id="wave-wipe" aria-hidden="true"><svg viewBox="0 0 1200 800" preserveAspectRatio="none"><path class="wave-back" d="M0 90 Q300 -40 600 85 T1200 65 V800 H0Z"/><path d="M0 150 Q300 10 600 130 T1200 115 V800 H0Z"/></svg></div></div>
+<section id="collection" class="collection" aria-labelledby="collection-heading"><div class="section-heading"><div><p class="eyebrow">The short list / 01—05</p><h2 id="collection-heading">Explore the coast.</h2></div><p>Choose a place to see its photos, access details and map.</p></div><div id="place-collection" class="place-collection"></div><p class="collection-note">A small, hand-curated collection. Time and vibe matches reflect our preferences, not current conditions.</p></section>
+
 <noscript><p class="no-script">Turn on JavaScript for matching. You can still read <a href="SOURCES.md">the places and their official sources</a>.</p></noscript>
 </main>
-<footer><p>Made for a day outside. Curated place facts, never live conditions. <a href="SOURCES.md">Sources & methodology</a> · <a href="CREDITS.md">Photo & artwork credits</a></p><span>By Sam Otto.</span></footer>
+<footer><p>Check current access and coastal advisories before visiting. <a href="https://www.weather.gov/beach/" target="_blank" rel="noopener noreferrer">Beach advisories ↗</a> · <a href="SOURCES.md">Sources & methodology</a> · <a href="CREDITS.md">Photo & artwork credits</a></p><span>By Sam Otto.</span></footer>
 </body></html>

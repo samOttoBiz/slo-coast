@@ -10,10 +10,10 @@ A small coastal field guide by Sam Otto. Pick a time and a vibe, or browse five 
 - Changes the illustrated light to reflect the selected mood.
 - Explains the match and labels time mismatches honestly.
 - Shows real destination photographs, with photographer/source/license credits.
-- Lists verified access facts with official source links.
+- Lists verified access facts with official source links, Pismo and Morro Surfline links, and an Avila coffee stop from the local visitor guide.
 - Lets visitors browse all five places or compare alternatives for their vibe.
-- Creates shareable URLs that restore the chosen place, time and vibe. Copying requires clipboard support; the address bar is the fallback.
-- Provides a simple preparation checklist. Checks last for the current page session and are not saved or shared.
+- Creates URLs that restore the chosen place, time and vibe; copy the address bar to share.
+- Links to official coastal advisories; reset washes the result away with a wave, unless reduced motion is enabled.
 - Uses responsive layouts, native radio controls, keyboard focus, a skip link and reduced-motion support.
 
 ## Run and test locally
@@ -34,9 +34,9 @@ The checks cover all 20 time/vibe combinations, all 55 supported explicit place 
 
 ## Edit and publish
 
-- `index.html`: structure, controls, recommendation and preparation checklist.
+- `index.html`: structure, controls, recommendation and coastal advisory link.
 - `style.css`: responsive layout, lighting and restrained transitions.
-- `app.js`: deterministic matching, browsing, URL restoration, alternatives and sharing.
+- `app.js`: deterministic matching, browsing, URL restoration, alternatives and plan URLs.
 - `data.js`: places, editorial preferences and sourced access details.
 - `assets/coast-illustration.webp`: local generated opening illustration.
 - `assets/photos/`: five real, licensed destination photographs.

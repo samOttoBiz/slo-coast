@@ -39,7 +39,8 @@ if(typeof document!=='undefined'){
   const selected=name=>form.querySelector(`input[name="${name}"]:checked`);
   const value=name=>selected(name)?.value;
   const reducedMotion=()=>typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let activePick=null,revealTimer;
+  let activePick=null,revealTimer,resetTimer;
+  const stage=document.querySelector('.result-stage');
   const places=()=>Array.isArray(globalThis.COAST_DATA)?globalThis.COAST_DATA:[];
   const safePlaces=()=>places().filter(validPlace);
   function updateMood(){
@@ -51,7 +52,7 @@ if(typeof document!=='undefined'){
     try{history.replaceState(null,'',url);}catch{}
   }
   function hideResult(){
-    clearTimeout(revealTimer);result.hidden=true;activePick=null;shareStatus.textContent='';clearPlanURL();
+    clearTimeout(revealTimer);clearTimeout(resetTimer);stage.classList.remove('is-resetting');result.hidden=true;activePick=null;shareStatus.textContent='';clearPlanURL();
   }
   function setChoice(name,choice){
     const input=form.querySelector(`input[name="${name}"][value="${choice}"]`);
@@ -61,7 +62,7 @@ if(typeof document!=='undefined'){
     const url=new URL(location.href);url.searchParams.set('time',pick.time);url.searchParams.set('vibe',pick.vibe);url.searchParams.set('place',pick.place.id);url.hash='result';return url;
   }
   function renderPick(pick,focus=true){
-    clearTimeout(revealTimer);result.classList.remove('revealing');
+    clearTimeout(revealTimer);clearTimeout(resetTimer);stage.classList.remove('is-resetting');result.classList.remove('revealing');
     if(pick.error){hideResult();status.textContent=pick.error;return;}
     activePick=pick;shareStatus.textContent='';
     const p=pick.place;
@@ -88,12 +89,17 @@ if(typeof document!=='undefined'){
     document.getElementById('spot-access').textContent=p.access||'Check the official place guide for access details before leaving.';
     document.getElementById('spot-prompt').textContent=p.prompt||'Take your time and follow posted guidance.';
     document.getElementById('spot-source').href=p.source;
+    const surfSource=document.getElementById('surf-source');
+    surfSource.hidden=!(typeof p.surfSource==='string'&&/^https:\/\/www\.surfline\.com\/surf-report\//.test(p.surfSource));
+    if(!surfSource.hidden)surfSource.href=p.surfSource;
+    const outingSource=document.getElementById('outing-source');outingSource.hidden=!officialURL(p.promptSource);
+    if(!outingSource.hidden)outingSource.href=p.promptSource;
     document.getElementById('access-source').href=officialURL(p.accessSource)?p.accessSource:p.source;
     document.getElementById('spot-map').href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.mapQuery||p.name+', San Luis Obispo County, CA')}`;
     const alternatives=document.getElementById('alternatives');alternatives.replaceChildren();
     const others=rankPlaces(places(),pick.time,pick.vibe).filter(item=>item.id!==p.id);
     if(others.length){
-      const heading=document.createElement('p');heading.textContent='Another way to '+(pick.vibe==='coastal-walk'?'take a walk':pick.vibe==='scenery'?'take in the view':pick.vibe==='surf'?'watch the surf':'unwind');alternatives.append(heading);
+      const heading=document.createElement('p');heading.textContent='More places for your vibe';alternatives.append(heading);
       others.forEach(other=>{const button=document.createElement('button');button.type='button';button.className='alternative-button';button.textContent=other.name+' ↗';button.addEventListener('click',()=>renderPick(recommend(places(),value('time'),value('vibe'),other.id)));alternatives.append(button);});
     }
     result.hidden=false;
@@ -104,12 +110,11 @@ if(typeof document!=='undefined'){
   }
   form.querySelectorAll('input[type="radio"]').forEach(input=>input.addEventListener('change',()=>{hideResult();updateMood();status.textContent='Your moment is set. Find your spot to see the match.';}));
   form.addEventListener('submit',event=>{event.preventDefault();renderPick(recommend(places(),value('time'),value('vibe')));});
-  document.getElementById('change-pick').addEventListener('click',()=>{hideResult();status.textContent='Choose your next moment.';selected('time')?.focus({preventScroll:true});document.getElementById('picker').scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
-  document.getElementById('share-pick').addEventListener('click',async()=>{
-    if(!activePick)return;
-    const url=planURL(activePick).href;
-    try{await navigator.clipboard.writeText(url);shareStatus.textContent='Plan link copied. Send it to your coast-going crew.';}
-    catch{shareStatus.textContent='Copy the link from your address bar to share this plan.';}
+  document.getElementById('change-pick').addEventListener('click',()=>{
+    if(stage.classList.contains('is-resetting'))return;
+    const finish=()=>{hideResult();status.textContent='Choose your next moment.';selected('time')?.focus({preventScroll:true});document.getElementById('picker').scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});};
+    if(reducedMotion()){finish();return;}
+    stage.classList.add('is-resetting');resetTimer=setTimeout(finish,760);
   });
   const collection=document.getElementById('place-collection');
   safePlaces().forEach((p,index)=>{
