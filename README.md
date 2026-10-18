@@ -9,6 +9,7 @@ A small coastal field guide by Sam Otto. Pick a time and a vibe, or browse five 
 - Matches five times of day and four vibes against five curated places.
 - Changes the illustrated light to reflect the selected mood.
 - Explains the match and labels time mismatches honestly.
+- Shows real destination photographs, with photographer/source/license credits.
 - Lists verified access facts with official source links.
 - Lets visitors browse all five places or compare alternatives for their vibe.
 - Creates shareable URLs that restore the chosen place, time and vibe. Copying requires clipboard support; the address bar is the fallback.
@@ -37,7 +38,8 @@ The checks cover all 20 time/vibe combinations, all 55 supported explicit place 
 - `style.css`: responsive layout, lighting and restrained transitions.
 - `app.js`: deterministic matching, browsing, URL restoration, alternatives and sharing.
 - `data.js`: places, editorial preferences and sourced access details.
-- `assets/coast-illustration.webp`: local generated coastal illustration.
+- `assets/coast-illustration.webp`: local generated opening illustration.
+- `assets/photos/`: five real, licensed destination photographs.
 - `SOURCES.md`: fact sources, review date and methodology.
 - `CREDITS.md`: asset and source provenance.
 
@@ -53,4 +55,4 @@ The working pre-workshop version is commit `38e0174f8960bf14128aa81e665f9ff99b7c
 
 This is a small editorial collection, not a comprehensive beach directory. There are no live weather, surf, tide, crowd, accessibility or closure feeds, no AI backend, no geolocation, no analytics, no accounts and no bookings. Check official notices before going. The imaginary coastline is labelled as an illustration and is not a destination photograph. External map and official-source links require network access.
 
-No new reuse license is granted by this copy; see `CREDITS.md`.
+Third-party photographs retain their individual CC BY, CC BY-SA, CC0 or public-domain terms. No new reuse license is granted for the original code or generated artwork; see `CREDITS.md`.

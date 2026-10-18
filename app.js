@@ -17,6 +17,7 @@ function validPlace(p){
 }
 function officialURL(url){return typeof url==='string' && /^https:\/\/(www\.)?(parks\.ca\.gov|pismobeach\.org|morrobayca\.gov|morrobay\.org|experiencepismobeach\.com|visitavilabeach\.com|portsanluis\.com)\//.test(url);}
 function rankPlaces(data,time,vibe){return data.filter(p=>p.vibes.includes(vibe)).sort((a,b)=>Number(b.times.includes(time))-Number(a.times.includes(time)));}
+function validPhoto(photo){return photo && ['src','alt','author','source','license','licenseURL','year'].every(key=>typeof photo[key]==='string'&&photo[key].trim()) && /^assets\/photos\/[a-z-]+\.jpg$/.test(photo.src) && /^https:\/\/(commons\.wikimedia\.org|www\.flickr\.com)\//.test(photo.source) && /^https:\/\/(creativecommons\.org|commons\.wikimedia\.org)\//.test(photo.licenseURL) && Number.isFinite(photo.width)&&photo.width>0&&Number.isFinite(photo.height)&&photo.height>0;}
 function recommend(data,time,vibe,placeId){
   if(!Object.hasOwn(TIMES,time)||!Object.hasOwn(VIBES,vibe)) return {error:'Choose a listed time and vibe, then try again.'};
   if(!Array.isArray(data)||data.length===0||!data.every(validPlace)||new Set(data.map(p=>p.id)).size!==data.length) return {error:'The local place list is unavailable. Reload the page, or read the sources below.'};
@@ -29,7 +30,7 @@ function recommend(data,time,vibe,placeId){
   const surf=vibe==='surf'?'Surf interest only: this is a place to consider, not a recommendation to enter the water. No swell, skill suitability or safety is assessed. ':'';
   return {place,time,vibe,partial,reason:`${place.detail} ${TIME_NOTES[time]}${partial?' Your vibe fits; we do not have a distinct time match in this small collection.':''}`,note:surf+place.note};
 }
-if(typeof module!=='undefined'&&module.exports) module.exports={TIMES,VIBES,recommend,validPlace,rankPlaces,officialURL};
+if(typeof module!=='undefined'&&module.exports) module.exports={TIMES,VIBES,recommend,validPlace,rankPlaces,officialURL,validPhoto};
 if(typeof document!=='undefined'){
   const form=document.getElementById('coast-form');
   const result=document.getElementById('result'),status=document.getElementById('status');
@@ -69,7 +70,18 @@ if(typeof document!=='undefined'){
     document.getElementById('spot-number').textContent=String(places().findIndex(item=>item.id===p.id)+1).padStart(2,'0');
     document.getElementById('spot-area').textContent=p.area||'SLO County';
     document.getElementById('spot-kind').textContent=p.kind||'Coastal place';
-    document.getElementById('spot-icon').setAttribute('href',`#icon-${['surf','relax','walk','scenery'].includes(p.icon)?p.icon:'scenery'}`);
+    const photo=document.getElementById('spot-photo'),fallback=document.getElementById('photo-fallback'),credit=document.getElementById('photo-credit');
+    result.querySelector('.photo-context').hidden=!validPhoto(p.photo);
+    credit.replaceChildren();photo.hidden=false;fallback.hidden=true;
+    photo.onload=()=>{photo.hidden=false;fallback.hidden=true;};
+    photo.onerror=()=>{photo.hidden=true;fallback.hidden=false;};
+    if(validPhoto(p.photo)){
+      photo.alt=p.photo.alt;photo.width=p.photo.width;photo.height=p.photo.height;photo.src=p.photo.src;
+      const author=document.createElement('a');author.href=p.photo.source;author.textContent=p.photo.author;author.target='_blank';author.rel='noopener noreferrer';
+      const license=document.createElement('a');license.href=p.photo.licenseURL;license.textContent=p.photo.license;license.target='_blank';license.rel='noopener noreferrer';
+      credit.append('Photo: ',author,' · ',license,'. Resized; cropped in layout.');
+      document.getElementById('photo-year').textContent=p.photo.year;
+    }else{photo.removeAttribute('src');photo.hidden=true;fallback.hidden=false;document.getElementById('photo-year').textContent='an earlier season';}
     document.getElementById('spot-reason').textContent=pick.reason;
     document.getElementById('spot-fact').textContent=p.fact;
     document.getElementById('spot-note').textContent=pick.note;
@@ -106,6 +118,7 @@ if(typeof document!=='undefined'){
     const name=document.createElement('strong');name.textContent=p.name;
     const kind=document.createElement('span');kind.className='card-kind';kind.textContent=p.kind||'Coastal place';
     const cta=document.createElement('span');cta.className='card-cta';cta.textContent='Explore this place ↗';
+    if(validPhoto(p.photo)){const image=document.createElement('img');image.className='card-photo';image.src=p.photo.src;image.alt='';image.width=p.photo.width;image.height=p.photo.height;image.loading='lazy';image.decoding='async';image.onerror=()=>{image.hidden=true;};button.append(image);}
     button.append(top,name,kind,cta);button.addEventListener('click',()=>{
       const vibe=p.vibes.includes(value('vibe'))?value('vibe'):p.vibes[0];
       setChoice('vibe',vibe);setChoice('time',p.times.includes(value('time'))?value('time'):p.times[0]);updateMood();renderPick(recommend(places(),value('time'),value('vibe'),p.id));

@@ -26,4 +26,4 @@ The packing and outing prompts are suggestions, not verified itineraries or trav
 
 ## Artwork
 
-The hero uses a locally served generated WebP illustration of an imaginary coastline. It is visibly labelled and is not a photograph, a map, a real view of any recommended place, or a measured sun path. Results use typographic field cards and icons, not destination photos. See [CREDITS.md](CREDITS.md) for provenance. No new third-party photographs or fonts are shipped.
+The hero uses a locally served generated WebP illustration of an imaginary coastline. It is visibly labelled and is not a photograph, a map, a real view of any recommended place, or a measured sun path. Results and the collection use five real destination photographs. They show past moments, not present conditions; each result includes the photograph year and linked credit/license. See [CREDITS.md](CREDITS.md) for full source identities, reuse terms and modifications. No external fonts are shipped.
