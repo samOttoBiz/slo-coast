@@ -2,15 +2,9 @@
 /* A small, deterministic preference matcher. No network calls or clock lookups. */
 const TIMES = Object.freeze({'sunrise':'Sunrise','morning':'Morning','midday':'Midday','golden-hour':'Golden hour','sunset':'Sunset'});
 const VIBES = Object.freeze({'surf':'Surf','relax':'Relax','coastal-walk':'Coastal walk','scenery':'Scenery'});
-const TIME_NOTES = Object.freeze({
-  sunrise:'For your sunrise mood, think early coastal light, not a promise of an ocean sunrise. Verify early access first.',
-  morning:'For a morning outing, we lean toward a simple place to begin the day. This is an editorial preference.',
-  midday:'For a midday pause, we favor a beach or cove setting. Bring sun protection and check access.',
-  'golden-hour':'For a golden-hour mood, we favor a broad coastal view. Light and visibility are never guaranteed.',
-  sunset:'For a sunset mood, we favor an ocean-view landmark. Check access and plan your return before dark.'
-});
 function validPlace(p){
-  return p && ['id','name','fact','detail','note'].every(k=>typeof p[k]==='string'&&p[k].trim())
+  return p && ['id','name','fact','detail'].every(k=>typeof p[k]==='string'&&p[k].trim())
+    && typeof p.note==='string'
     && typeof p.source==='string' && /^https:\/\/(www\.)?(parks\.ca\.gov|pismobeach\.org|morrobayca\.gov|experiencepismobeach\.com|visitavilabeach\.com)\//.test(p.source)
     && Array.isArray(p.vibes)&&p.vibes.length>0&&p.vibes.every(v=>Object.hasOwn(VIBES,v))
     && Array.isArray(p.times)&&p.times.length>0&&p.times.every(t=>Object.hasOwn(TIMES,t));
@@ -27,8 +21,7 @@ function recommend(data,time,vibe,placeId){
   const place=placeId?candidates.find(p=>p.id===placeId):candidates[0];
   if(!place)return {error:'This place does not fit the selected vibe. Choose another place.'};
   const partial=!place.times.includes(time);
-  const surf=vibe==='surf'?'Surf interest only: this is a place to consider, not a recommendation to enter the water. No swell, skill suitability or safety is assessed. ':'';
-  return {place,time,vibe,partial,reason:`${place.detail} ${TIME_NOTES[time]}${partial?' Your vibe fits; we do not have a distinct time match in this small collection.':''}`,note:surf+place.note};
+  return {place,time,vibe,partial,reason:place.detail,note:place.note};
 }
 if(typeof module!=='undefined'&&module.exports) module.exports={TIMES,VIBES,recommend,validPlace,rankPlaces,officialURL,validPhoto};
 if(typeof document!=='undefined'){
@@ -72,7 +65,6 @@ if(typeof document!=='undefined'){
     document.getElementById('spot-area').textContent=p.area||'SLO County';
     document.getElementById('spot-kind').textContent=p.kind||'Coastal place';
     const photo=document.getElementById('spot-photo'),fallback=document.getElementById('photo-fallback'),credit=document.getElementById('photo-credit');
-    result.querySelector('.photo-context').hidden=!validPhoto(p.photo);
     credit.replaceChildren();photo.hidden=false;fallback.hidden=true;
     photo.onload=()=>{photo.hidden=false;fallback.hidden=true;};
     photo.onerror=()=>{photo.hidden=true;fallback.hidden=false;};
@@ -80,12 +72,12 @@ if(typeof document!=='undefined'){
       photo.alt=p.photo.alt;photo.width=p.photo.width;photo.height=p.photo.height;photo.src=p.photo.src;
       const author=document.createElement('a');author.href=p.photo.source;author.textContent=p.photo.author;author.target='_blank';author.rel='noopener noreferrer';
       const license=document.createElement('a');license.href=p.photo.licenseURL;license.textContent=p.photo.license;license.target='_blank';license.rel='noopener noreferrer';
-      credit.append('Photo: ',author,' · ',license,'. Resized; cropped in layout.');
-      document.getElementById('photo-year').textContent=p.photo.year;
-    }else{photo.removeAttribute('src');photo.hidden=true;fallback.hidden=false;document.getElementById('photo-year').textContent='an earlier season';}
+      credit.append('Photo: ',author,' · ',p.photo.year,' · ',license,' · resized/cropped.');
+    }else{photo.removeAttribute('src');photo.hidden=true;fallback.hidden=false;}
     document.getElementById('spot-reason').textContent=pick.reason;
     document.getElementById('spot-fact').textContent=p.fact;
     document.getElementById('spot-note').textContent=pick.note;
+    document.getElementById('spot-note').hidden=!pick.note;
     document.getElementById('spot-access').textContent=p.access||'Check the official place guide for access details before leaving.';
     document.getElementById('spot-prompt').textContent=p.prompt||'Take your time and follow posted guidance.';
     document.getElementById('spot-source').href=p.source;
@@ -105,7 +97,7 @@ if(typeof document!=='undefined'){
     result.hidden=false;
     if(!reducedMotion()){void result.offsetWidth;result.classList.add('revealing');revealTimer=setTimeout(()=>result.classList.remove('revealing'),400);}
     try{history.replaceState(null,'',planURL(pick));}catch{}
-    status.textContent=`${p.name}. ${pick.partial?'Vibe match; no distinct time match.':'An editorial time and vibe match.'}`;
+    status.textContent=`${p.name}. ${pick.partial?'Vibe match.':'Time + vibe match.'}`;
     if(focus){spotName.focus({preventScroll:true});result.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}
   }
   form.querySelectorAll('input[type="radio"]').forEach(input=>input.addEventListener('change',()=>{hideResult();updateMood();status.textContent='Your moment is set. Find your spot to see the match.';}));

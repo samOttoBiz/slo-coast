@@ -8,7 +8,7 @@ A small coastal field guide by Sam Otto. Pick a time and a vibe, or browse five 
 
 - Matches five times of day and four vibes against five curated places.
 - Changes the illustrated light to reflect the selected mood.
-- Explains the match and labels time mismatches honestly.
+- Shows concise place descriptions and distinguishes a time-and-vibe match from a vibe match.
 - Shows real destination photographs, with photographer/source/license credits.
 - Lists verified access facts with official source links, Pismo and Morro Surfline links, and an Avila coffee stop from the local visitor guide.
 - Lets visitors browse all five places or compare alternatives for their vibe.

@@ -11,7 +11,7 @@ for(const time of Object.keys(TIMES))for(const vibe of Object.keys(VIBES)){
   assert.deepEqual(pick,recommend(data,time,vibe),'deterministic selection');
   const ranked=rankPlaces(data,time,vibe);
   if(ranked.some(p=>p.times.includes(time)))assert.ok(pick.place.times.includes(time));
-  if(vibe==='surf')assert.match(pick.note,/not a recommendation to enter the water/);
+  assert.equal(pick.note,pick.place.note);
   for(const p of ranked){assert.equal(recommend(data,time,vibe,p.id).place.id,p.id);alternatives++;}
   combinations++;
 }
